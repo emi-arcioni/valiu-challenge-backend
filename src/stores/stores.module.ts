@@ -3,7 +3,7 @@ import { StoresService } from './stores.service';
 import { StoresController } from './stores.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Store } from './entities/store.entity';
-import { StoreExists } from 'src/validators/store-exists.validator';
+import { StoreExists } from '../validators/store-exists.validator';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Store])],

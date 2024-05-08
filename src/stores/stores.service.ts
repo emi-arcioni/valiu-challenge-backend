@@ -4,7 +4,7 @@ import { UpdateStoreDto } from './dto/update-store.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Store } from './entities/store.entity';
-import TablesOnStoreError from 'src/errors/tables-on-store.error';
+import TablesOnStoreError from '../errors/tables-on-store.error';
 
 @Injectable()
 export class StoresService {

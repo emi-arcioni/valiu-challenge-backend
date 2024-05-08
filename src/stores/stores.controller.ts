@@ -13,7 +13,7 @@ import {
 import { StoresService } from './stores.service';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
-import TablesOnStoreError from 'src/errors/tables-on-store.error';
+import TablesOnStoreError from '../errors/tables-on-store.error';
 
 @Controller('stores')
 export class StoresController {
