@@ -4,9 +4,10 @@ import { AppService } from './app.service';
 import { StoresModule } from './stores/stores.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from 'config/typeorm';
+import { TablesModule } from './tables/tables.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(typeOrmConfig), StoresModule],
+  imports: [TypeOrmModule.forRoot(typeOrmConfig), StoresModule, TablesModule],
   controllers: [AppController],
   providers: [AppService],
 })

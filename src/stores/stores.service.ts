@@ -4,6 +4,7 @@ import { UpdateStoreDto } from './dto/update-store.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Store } from './entities/store.entity';
+import TablesOnStoreError from 'src/errors/tables-on-store.error';
 
 @Injectable()
 export class StoresService {
@@ -24,6 +25,7 @@ export class StoresService {
   async findAll(): Promise<Store[]> {
     try {
       return await this.storesRepository.find({
+        relations: ['tables'],
         order: { id: 'ASC' },
       });
     } catch (err) {
@@ -36,6 +38,7 @@ export class StoresService {
     try {
       return await this.storesRepository.findOne({
         where: { id },
+        relations: ['tables'],
       });
     } catch (err) {
       console.log(err.message);
@@ -59,6 +62,19 @@ export class StoresService {
 
   async remove(id: number): Promise<DeleteResult> {
     try {
+      const store = await this.storesRepository.findOne({
+        where: { id },
+        relations: ['tables'],
+      });
+      /**
+       * I check if the Store has any linked Tables.
+       * If so, I throw a custom exception
+       */
+      if (store?.tables.length > 0)
+        throw new TablesOnStoreError(
+          'Store has tables associated, please delete them first',
+        );
+
       return await this.storesRepository.delete(id);
     } catch (err) {
       console.log(err.message);

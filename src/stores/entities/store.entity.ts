@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Table } from '../../tables/entities/table.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Store {
@@ -7,4 +8,7 @@ export class Store {
 
   @Column()
   name: string;
+
+  @OneToMany(() => Table, (table) => table.store)
+  tables: Table[];
 }
