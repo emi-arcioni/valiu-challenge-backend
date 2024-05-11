@@ -13,6 +13,5 @@ import { Table } from '../tables/entities/table.entity';
   ],
   controllers: [ReservationsController],
   providers: [ReservationsService, TablesService],
-  exports: [ReservationsService],
 })
 export class ReservationsModule {}

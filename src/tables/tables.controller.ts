@@ -13,7 +13,7 @@ import {
 import { TablesService } from './tables.service';
 import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
-import ReservationsOnTableError from 'src/errors/reservations-on-table.error';
+import ReservationsOnTableError from '../errors/reservations-on-table.error';
 
 @Controller('tables')
 export class TablesController {
