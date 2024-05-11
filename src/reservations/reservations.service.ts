@@ -26,17 +26,19 @@ export class ReservationsService {
        * - Check availability based on date
        * - Check availability based on customers
        * - First try to allocate customers in tables that customers = size
-       * - Then try to allocate customers in tables that customers <= size / 2
+       * - Then try to allocate customers in tables that customers >= size * 0.5
        */
 
-      // Get all the tables of the store with potentially matching size for customers
+      // Get all tables without reservation for the date, and which size * 0.5 is <= customers
+      // (potentially matching size for customers)
+
       // TODO: this logic could be traslated to the DB engine
+
       const tables = (
         await this.tablesService.findAll({
           storeId: createReservationDto.store.id,
         })
       ).filter((table) => {
-        // const a = dayjs(reservation.date);
         const reservationForDate = table.reservations.find((reservation) =>
           dayjs(reservation.date).isSame(
             dayjs(createReservationDto.date),
@@ -44,7 +46,9 @@ export class ReservationsService {
           ),
         );
         return (
-          !reservationForDate && table.size >= createReservationDto.customers
+          !reservationForDate &&
+          createReservationDto.customers >= table.size * 0.5 &&
+          createReservationDto.customers <= table.size
         );
       });
 
