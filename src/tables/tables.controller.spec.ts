@@ -4,7 +4,7 @@ import { TablesService } from './tables.service';
 
 describe('TablesController', () => {
   let controller: TablesController;
-  const mockTable = { id: 1, capacity: 2 };
+  const mockTable = { id: 1, size: 2 };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

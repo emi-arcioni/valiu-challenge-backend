@@ -13,6 +13,7 @@ import {
 import { TablesService } from './tables.service';
 import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
+import ReservationsOnTableError from 'src/errors/reservations-on-table.error';
 
 @Controller('tables')
 export class TablesController {
@@ -56,7 +57,17 @@ export class TablesController {
 
   @Delete(':id')
   async remove(@Param('id') id: number) {
-    const response = await this.tablesService.remove(id);
+    let response;
+    try {
+      response = await this.tablesService.remove(id);
+    } catch (err) {
+      /**
+       * This way I detect that the Store has linked Tables,
+       * and if so, I throw an exception with the custom error message
+       */
+      if (err instanceof ReservationsOnTableError)
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
 
     /**
      * If response.affected === 0, I can assume that the Table that I'm willing to delete doesn't exist

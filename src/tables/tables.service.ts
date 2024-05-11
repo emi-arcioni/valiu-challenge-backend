@@ -4,7 +4,11 @@ import { UpdateTableDto } from './dto/update-table.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Table } from './entities/table.entity';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import ReservationsOnTableError from '../errors/reservations-on-table.error';
 
+type Filters = {
+  storeId?: number;
+};
 @Injectable()
 export class TablesService {
   constructor(
@@ -21,11 +25,22 @@ export class TablesService {
     }
   }
 
-  async findAll(): Promise<Table[]> {
+  async findAll(filters: Filters = {}): Promise<Table[]> {
+    const { storeId } = filters;
+    let where;
+
+    if (storeId)
+      where = {
+        store: {
+          id: storeId,
+        },
+      };
+
     try {
       return await this.tablesRepository.find({
-        relations: ['store'],
+        relations: ['store', 'reservations'],
         order: { id: 'ASC' },
+        where,
       });
     } catch (err) {
       console.log(err.message);
@@ -37,7 +52,7 @@ export class TablesService {
     try {
       return await this.tablesRepository.findOne({
         where: { id },
-        relations: ['store'],
+        relations: ['store', 'reservations'],
       });
     } catch (err) {
       console.log(err.message);
@@ -50,9 +65,9 @@ export class TablesService {
     updateTableDto: UpdateTableDto,
   ): Promise<UpdateResult> {
     try {
-      const { capacity, store } = updateTableDto;
+      const { size, store } = updateTableDto;
       return await this.tablesRepository.update(id, {
-        capacity,
+        size,
         store,
       });
     } catch (err) {
@@ -63,6 +78,19 @@ export class TablesService {
 
   async remove(id: number): Promise<DeleteResult> {
     try {
+      const store = await this.tablesRepository.findOne({
+        where: { id },
+        relations: ['reservations'],
+      });
+      /**
+       * I check if the Table has any linked Reservations.
+       * If so, I throw a custom exception
+       */
+      if (store?.reservations.length > 0)
+        throw new ReservationsOnTableError(
+          'Table has reservations associated, please delete them first',
+        );
+
       return await this.tablesRepository.delete(id);
     } catch (err) {
       console.log(err.message);

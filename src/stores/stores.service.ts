@@ -25,7 +25,7 @@ export class StoresService {
   async findAll(): Promise<Store[]> {
     try {
       return await this.storesRepository.find({
-        relations: ['tables'],
+        relations: ['tables', 'tables.reservations'],
         order: { id: 'ASC' },
       });
     } catch (err) {
@@ -38,7 +38,7 @@ export class StoresService {
     try {
       return await this.storesRepository.findOne({
         where: { id },
-        relations: ['tables'],
+        relations: ['tables', 'tables.reservations'],
       });
     } catch (err) {
       console.log(err.message);

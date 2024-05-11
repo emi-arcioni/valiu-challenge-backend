@@ -1,10 +1,21 @@
-import { IsNotEmpty, Validate } from 'class-validator';
+import {
+  IsDateString,
+  IsInt,
+  IsNotEmpty,
+  Min,
+  Validate,
+} from 'class-validator';
 import { StoreExists } from '../../validators/store-exists.validator';
 import { Store } from '../../stores/entities/store.entity';
 
-export class CreateTableDto {
+export class CreateReservationDto {
   @IsNotEmpty()
-  size: number;
+  @IsDateString()
+  date: Date;
+
+  @IsInt()
+  @Min(1)
+  customers: number;
 
   @IsNotEmpty()
   @Validate(StoreExists)
