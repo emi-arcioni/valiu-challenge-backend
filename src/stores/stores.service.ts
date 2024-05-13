@@ -6,6 +6,7 @@ import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Store } from './entities/store.entity';
 import TablesOnStoreError from '../errors/tables-on-store.error';
 
+const ITEMS_PER_PAGE = 15;
 @Injectable()
 export class StoresService {
   constructor(
@@ -22,11 +23,15 @@ export class StoresService {
     }
   }
 
-  async findAll(): Promise<Store[]> {
+  async findAll(page: number = 1): Promise<Store[]> {
+    const skip = (page - 1) * ITEMS_PER_PAGE;
+    const take = ITEMS_PER_PAGE;
     try {
       return await this.storesRepository.find({
         relations: ['tables', 'tables.reservations'],
         order: { id: 'ASC' },
+        skip,
+        take,
       });
     } catch (err) {
       console.log(err.message);

@@ -9,6 +9,7 @@ import {
   HttpCode,
   HttpException,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { StoresService } from './stores.service';
 import { CreateStoreDto } from './dto/create-store.dto';
@@ -26,8 +27,8 @@ export class StoresController {
   }
 
   @Get()
-  async findAll() {
-    return await this.storesService.findAll();
+  async findAll(@Query('page') page: number) {
+    return await this.storesService.findAll(page);
   }
 
   @Get(':id')
