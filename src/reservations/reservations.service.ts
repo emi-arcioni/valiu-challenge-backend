@@ -125,7 +125,7 @@ export class ReservationsService {
     try {
       return await this.reservationsRepository.findOne({
         where: { id },
-        relations: ['table', 'store'],
+        relations: ['table', 'table.store'],
       });
     } catch (err) {
       console.log(err.message);
